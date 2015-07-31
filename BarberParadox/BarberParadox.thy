@@ -1,9 +1,8 @@
 theory BarberParadox
 imports
-  HOL
+  HOL 
 begin
 declare [[show_types]]
-
 
 text{*
 This forward proof of the barber paradox relies only on lemmas from HOL and immediate proof
@@ -38,4 +37,6 @@ proof -
       clashes with the axiom that '\<longleftrightarrow>' is reflexive."
 qed
 
+
 end
+

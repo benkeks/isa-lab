@@ -31,9 +31,9 @@ using assms proof (induct "(a, t)" arbitrary: a t)
 case init 
   thus "a_start < t_start"
     using tortoise_ahead by simp
-next case (step ac at)
-  hence "a = at" using positive_speed(1) by simp
-  moreover have "t = at + (at - ac) / a_speed * t_speed" using step(3) by auto
+next case (step ac tc)
+  hence "a = tc" using positive_speed(1) by simp
+  moreover have "t = tc + (tc - ac) / a_speed * t_speed" using step(3) by auto
   ultimately show ?case using step(2) positive_speed by auto
 qed
 

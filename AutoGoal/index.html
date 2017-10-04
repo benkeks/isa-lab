@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html style="height:100%">
+	<head>
+		<meta charset="UTF-8">
+		<title>Isabelle/HOL Goal to Isar Proof Outline</title>
+		<link rel="stylesheet" href="bootstrap.min.css" />
+		<script type="text/javascript" src="jquery.min.js"></script>
+	</head>
+	<body style="height:100%">
+		<p>Enter Isabelle/HOL Goal state on the left hand side. Receive corresponding Isar Proof Outline on the right hand side.</p>
+		<div class="row" style="height: auto; position: absolute; top:40px; bottom: 0px; width: 100%">
+			<div class="col-sm-6" style="height: 100%">
+				<textarea id="isabelle-goal" style="width:100%; height:100%;"></textarea>
+			</div>
+			<div class="col-sm-6 editing" style="height:100%">
+				<textarea id="isabelle-src" style="width:100%; height:100%;"></textarea>
+			</div>
+		</div>
+		
+		<script type="text/javascript">
+			$('#isabelle-goal').change(function () {
+				var isabelleExpression = $('#isabelle-goal').val();
+				var fixesAssumesShows = /[^\u{22c0}]*\u{22c0}([^\.]*)\.([^]*)\u{27f9}([^\u27f9]*)+/mu.exec(isabelleExpression);
+				if (fixesAssumesShows) {
+					fixes = fixesAssumesShows[1].trim();
+					assumes = fixesAssumesShows[2].split(/([(\)\(\u{27f9}])/mug);
+					var parens = 0;
+					var assumesString = '';
+					for (var i in assumes) {
+						v = assumes[i];
+						if (v == '(') {
+							parens++;
+							assumesString += v;
+						} else if (v == ')') {
+							parens--;
+							assumesString += v;
+						} else if (v == '⟹') {
+							if (parens == 0) {
+								assumesString += '"\n  "';
+							} else {
+								assumesString += v;
+							}
+						} else {
+							assumesString += v.trim();
+						}
+					}
+					//.replace(/\s*\u{27f9}\s*/umg, '"\n  "').trim();
+					shows = fixesAssumesShows[3].trim();
+					output = 'fix ' + fixes + '\nassume\n  "' + assumesString + '"\nthus "' + shows + '"';
+					$('#isabelle-src').val(output);
+				} else {
+					console.log("failed");
+				}
+			});
+		</script>
+	
+	</body>
+</html>
